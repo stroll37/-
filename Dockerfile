@@ -1,40 +1,22 @@
 # 处方生成服务器 Dockerfile
 # 优化镜像大小，支持中文LaTeX编译
+# 使用Debian基础镜像以获得更好的LaTeX包支持
 
-# 第一阶段：构建LaTeX环境
-FROM oven/bun:alpine AS latex-builder
+# 使用单阶段构建简化镜像
+FROM oven/bun:debian
 
 # 安装LaTeX和相关依赖
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     texlive-xetex \
     texlive-latex-extra \
-    texlive-latex-recommended \
     texlive-fonts-extra \
     texlive-lang-chinese \
     texlive-pstricks \
-    wqy-zenhei \
-    font-noto-cjk \
-    ghostscript \
-    make \
-    perl \
-    && mkdir -p /usr/share/texmf-dist/tex/latex
-
-# 第二阶段：应用构建
-FROM oven/bun:alpine
-
-# 安装运行时依赖
-RUN apk add --no-cache \
-    texlive-xetex \
-    texlive-latex-extra \
-    texlive-latex-recommended \
-    texlive-fonts-extra \
-    texlive-lang-chinese \
-    texlive-pstricks \
-    wqy-zenhei \
-    font-noto-cjk \
+    fonts-wqy-zenhei \
+    fonts-noto-cjk \
     ghostscript \
     # 清理缓存以减小镜像大小
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/lib/apt/lists/*
 
 # 创建工作目录
 WORKDIR /app
