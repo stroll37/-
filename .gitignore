@@ -145,3 +145,4 @@ dist/
 
 # temp files
 temp/
+bun.lock

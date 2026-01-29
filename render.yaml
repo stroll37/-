@@ -1,0 +1,27 @@
+services:
+  # 处方生成服务器
+  - type: web
+    name: prescription-server
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: MAX_CONCURRENT_COMPILATIONS
+        value: 3
+      - key: COMPILATION_TIMEOUT_MS
+        value: 30000
+    healthCheckPath: /status
+    autoDeploy: true
+    disk:
+      name: prescription-data
+      mountPath: /app/temp
+      sizeGB: 1
+    resources:
+      memoryMB: 512
+      cpu: 0.25
+    domains:
+      - prescription-server.onrender.com

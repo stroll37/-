@@ -4,164 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医疗处方生成系统 - AGPL-3.0</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #007bff;
-            --warning-red: #d9534f;
-            --bg-gray: #f8f9fa;
-        }
-
-        body {
-            font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-            background-color: var(--bg-gray);
-            color: #333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 1.2em;
-            color: var(--accent-color);
-            margin: 20px 0 15px;
-            padding-left: 10px;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .full-width {
-            grid-column: span 2;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
-        }
-
-        input:focus {
-            border-color: var(--accent-color);
-            outline: none;
-        }
-
-        /* 授权码高亮样式 */
-        .auth-box {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #ffeeba;
-            margin-bottom: 20px;
-        }
-
-        /* 药品列表样式 */
-        .medicine-item {
-            background: #fdfdfd;
-            border: 1px solid #eee;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .btn {
-            cursor: pointer;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
-
-        .btn-add {
-            background: #28a745;
-            color: white;
-            margin-top: 10px;
-        }
-
-        .btn-submit {
-            background: var(--accent-color);
-            color: white;
-            width: 100%;
-            font-size: 1.1em;
-            margin-top: 30px;
-        }
-
-        .btn-remove {
-            background: var(--warning-red);
-            color: white;
-            padding: 5px 10px;
-            font-size: 0.8em;
-            float: right;
-        }
-
-        /* 页脚样式 */
-        footer {
-            margin-top: 50px;
-            padding: 25px;
-            border-top: 1px solid #ddd;
-            text-align: center;
-            font-size: 13px;
-            color: #666;
-        }
-
-        .legal-tag {
-            color: var(--warning-red);
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .source-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: var(--accent-color);
-            text-decoration: none;
-            border: 1px solid var(--accent-color);
-            padding: 6px 16px;
-            border-radius: 20px;
-            transition: all 0.3s;
-        }
-
-        .source-link:hover {
-            background: var(--accent-color);
-            color: white;
-        }
-    </style>
+    <title>Prescription Generator - AGPL-3.0</title>
+    <meta name="description" content="Medical prescription generation tool for licensed physicians">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -174,7 +19,7 @@
             <div class="auth-box">
                 <label for="authCode">🔐 授权验证码 (Authentication Code)</label>
                 <input type="text" id="authCode" name="authCode" placeholder="请查阅源码计算此代码" required>
-                <small style="color: #856404;">* License 请查看页脚；非医师严禁操作；授权基准：{{AUTH_BASE}}</small>
+                <small>* License 请查看页脚；非医师严禁操作；授权基准：{{AUTH_BASE}}</small>
             </div>
 
             <div class="section-title">基础信息</div>
@@ -206,12 +51,12 @@
                     <label>临床诊断</label>
                     <textarea name="diagnosis" rows="2" placeholder="子宫内膜透明细胞腺癌[2C76.2] 伴肺转移[2D82.0] 确诊"
                         required></textarea>
-                    <small style="color: #3f3f3f;">* <s>望丰展？使 LaTeX...</s> 不支持，请勿使用 LaTeX.</small>
+                    <small class="helper-text">* <s>望丰展？使 LaTeX...</s> 不支持，请勿使用 LaTeX.</small>
                 </div>
             </div>
 
             <div class="section-title">处方内容 (Rp)</div>
-            <div id="drugDict" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+            <div id="drugDict" class="drug-dictionary">
                 <!-- 按钮将由 JS 动态生成 -->
             </div>
             <div id="medicinesContainer">
@@ -223,13 +68,16 @@
                 <div>
                     <label>医师签名图片 (PNG)</label>
                     <input type="file" id="signUpload" accept="image/png">
-                    <small style="color: #666;">若不上传，将使用默认签名</small>
+                    <small class="helper-text">若不上传，将使用默认签名</small>
                 </div>
                 <div><label>医师姓名</label><input type="text" name="doctorName" required></div>
                 <div class="full-width"><label>总金额 (￥)</label><input type="text" name="fee" required></div>
             </div>
 
             <button type="submit" class="btn btn-submit">生成 PDF 处方文档</button>
+            
+            <!-- Status message container -->
+            <div id="statusMessage" class="status-message" style="display: none;"></div>
         </form>
     </div>
 
@@ -239,155 +87,336 @@
         <a href="/source" target="_blank" class="source-link">
             📂 查看并下载项目源代码 (Source Code)
         </a>
-        <p style="margin-top: 15px; opacity: 0.6;">Build Version: {{VERSION}} | © 2026 Licensed under AGPLv3</p>
+        <p class="version-info">Build Version: {{VERSION}} | © 2026 Licensed under AGPLv3</p>
     </footer>
 
     <script>
-
-        const drugDictionary = [
-            { name: '普瑞巴林胶囊（喜思平）\\hfill 75mg*90粒/瓶', quantity: '1 瓶', usage: '150mg Bid. 口服' },
-            { name: '氟西汀胶囊（百忧解）\\hfill 20mg*7粒/盒', quantity: '3 盒', usage: '20mg Qd. 口服' },
-            { name: '舍曲林片（左洛复）\\hfill 50mg*14片/盒', quantity: '2 盒', usage: '50mg Qd. 口服' },
-            { name: '贝伐珠单抗注射液（安维汀）\\hfill 1\\%*4ml/瓶', quantity: '10 瓶', usage: '750mg Q3w. iv.' }
-        ];
-
-        const dictContainer = document.getElementById('drugDict');
-        
-        function addMedicineRow(name = '', qty = '', usage = '') {
-            const container = document.getElementById('medicinesContainer');
-            const div = document.createElement('div');
-            div.className = 'medicine-item';
-            div.innerHTML = `
-        <button type="button" class="btn btn-remove">移除</button>
-        <div class="form-grid">
-            <div class="full-width"><label>药品名称</label><input type="text" class="medicineName" value="${name}" required></div>
-            <div><label>规格/总量</label><input type="text" class="medicineQuantity" value="${qty}" required></div>
-            <div><label>用法用量</label><input type="text" class="medicineUsage" value="${usage}" required></div>
-        </div>
-    `;
-            container.appendChild(div);
-        }
-
-        // 初始化药品字典按钮
-        drugDictionary.forEach(drug => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'btn';
-            btn.style.cssText = "background: #e9ecef; color: #495057; border: 1px solid #ced4da; font-size: 0.85em; padding: 5px 12px;";
-            btn.innerText = drug.name.split('\\')[0]; // 显示简短名称
-
-            btn.onclick = () => {
-                // 调用之前定义的添加行函数
-                addMedicineRow(drug.name, drug.quantity, drug.usage);
+        // Prescription Generator Application
+        (function() {
+            'use strict';
+            
+            // Configuration
+            const CONFIG = {
+                drugDictionary: [
+                    { name: '普瑞巴林胶囊（喜思平）', spec: '75mg*90粒/瓶', quantity: '1 瓶', usage: '150mg Bid. 口服' },
+                    { name: '氟西汀胶囊（百忧解）', spec: '20mg*7粒/盒', quantity: '3 盒', usage: '20mg Qd. 口服' },
+                    { name: '舍曲林片（左洛复）', spec: '50mg*14片/盒', quantity: '2 盒', usage: '50mg Qd. 口服' },
+                    { name: '贝伐珠单抗注射液（安维汀）', spec: '1%*4ml/瓶', quantity: '10 瓶', usage: '750mg Q3w. iv.' }
+                ],
+                minMedicines: 1,
+                maxMedicines: 20
             };
-
-            dictContainer.appendChild(btn);
-        });
-
-        // 自动填充今日日期
-        document.getElementById('currentDate').valueAsDate = new Date();
-
-        // 动态添加药品逻辑
-        document.getElementById('addMedicine').onclick = function () {
-            const container = document.getElementById('medicinesContainer');
-            const newItem = container.children[0].cloneNode(true);
-            newItem.querySelectorAll('input').forEach(input => input.value = '');
-            container.appendChild(newItem);
-        };
-
-        // 移除药品逻辑
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('btn-remove')) {
-                const items = document.querySelectorAll('.medicine-item');
-                if (items.length > 1) e.target.closest('.medicine-item').remove();
-                else alert('处方至少需包含一种药品');
+            
+            // DOM Elements
+            const elements = {
+                form: document.getElementById('prescriptionForm'),
+                drugDict: document.getElementById('drugDict'),
+                medicinesContainer: document.getElementById('medicinesContainer'),
+                addMedicineBtn: document.getElementById('addMedicine'),
+                currentDate: document.getElementById('currentDate'),
+                signUpload: document.getElementById('signUpload'),
+                statusMessage: document.getElementById('statusMessage')
+            };
+            
+            // State
+            let isSubmitting = false;
+            
+            // Initialize application
+            function init() {
+                setupEventListeners();
+                initializeDrugDictionary();
+                addInitialMedicineRow();
+                setCurrentDate();
             }
-        });
-
-        const form = document.getElementById('prescriptionForm');
-        const statusMessage = document.getElementById('statusMessage') || document.createElement('p');
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            // 界面反馈
-            statusMessage.style.color = "#2c3e50";
-            statusMessage.textContent = '⏳ 正在调用本地 XeLaTeX 引擎生成 PDF，请稍候...';
-            if (!statusMessage.parentNode) form.appendChild(statusMessage);
-
-            // 1. 提取基础表单数据
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-
-            // 2. 提取动态药品列表 (注意：类名已更新为 .medicine-item)
-            data.medicines = Array.from(document.querySelectorAll('.medicine-item')).map(item => ({
-                name: item.querySelector('.medicineName').value,
-                quantity: item.querySelector('.medicineQuantity').value,
-                usage: item.querySelector('.medicineUsage').value
-            }));
-
-            if(data.medicines.length === 0) {
-                statusMessage.style.color = "#d9534f";
-                statusMessage.textContent = '❌ 处方至少需包含一种药品';
-                return;
+            
+            // Set up event listeners
+            function setupEventListeners() {
+                elements.form.addEventListener('submit', handleFormSubmit);
+                elements.addMedicineBtn.addEventListener('click', handleAddMedicine);
+                elements.medicinesContainer.addEventListener('click', handleMedicineContainerClick);
             }
-
-            const signFile = document.getElementById('signUpload').files[0];
-            if (signFile) {
-                const reader = new FileReader();
-                data.customSign = await new Promise((resolve) => {
-                    reader.onload = () => resolve(reader.result.split(',')[1]); // 只要 base64 部分
-                    reader.readAsDataURL(signFile);
+            
+            // Initialize drug dictionary buttons
+            function initializeDrugDictionary() {
+                CONFIG.drugDictionary.forEach(drug => {
+                    const button = createDrugButton(drug);
+                    elements.drugDict.appendChild(button);
                 });
             }
-
-            try {
-                const response = await fetch('/compile', {
+            
+            // Create drug button element
+            function createDrugButton(drug) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'drug-dict-btn';
+                button.textContent = drug.name;
+                button.title = `规格: ${drug.spec}, 用量: ${drug.quantity}, 用法: ${drug.usage}`;
+                button.addEventListener('click', () => addMedicineRow(drug.name, drug.spec, drug.quantity, drug.usage));
+                return button;
+            }
+            
+            // Add medicine row to the form
+            function addMedicineRow(name = '', spec = '', quantity = '', usage = '') {
+                const row = createMedicineRow(name, spec, quantity, usage);
+                elements.medicinesContainer.appendChild(row);
+            }
+            
+            // Create medicine row element
+            function createMedicineRow(name, spec, quantity, usage) {
+                const div = document.createElement('div');
+                div.className = 'medicine-item';
+                div.innerHTML = `
+                    <button type="button" class="btn btn-remove" aria-label="移除药品">移除</button>
+                    <div class="form-grid">
+                        <div>
+                            <label for="medicineName_${Date.now()}">药品名称</label>
+                            <input type="text" class="medicineName" value="${escapeHtml(name)}" required>
+                        </div>
+                        <div>
+                            <label for="medicineSpec_${Date.now()}">规格</label>
+                            <input type="text" class="medicineSpec" value="${escapeHtml(spec)}" required>
+                        </div>
+                        <div>
+                            <label for="medicineQuantity_${Date.now()}">总量</label>
+                            <input type="text" class="medicineQuantity" value="${escapeHtml(quantity)}" required>
+                        </div>
+                        <div>
+                            <label for="medicineUsage_${Date.now()}">用法用量</label>
+                            <input type="text" class="medicineUsage" value="${escapeHtml(usage)}" required>
+                        </div>
+                    </div>
+                `;
+                return div;
+            }
+            
+            // Add initial medicine row
+            function addInitialMedicineRow() {
+                addMedicineRow('', '', '', '');
+            }
+            
+            // Set current date
+            function setCurrentDate() {
+                if (elements.currentDate) {
+                    elements.currentDate.valueAsDate = new Date();
+                }
+            }
+            
+            // Handle medicine container click events
+            function handleMedicineContainerClick(event) {
+                if (event.target.classList.contains('btn-remove')) {
+                    removeMedicineRow(event.target.closest('.medicine-item'));
+                }
+            }
+            
+            // Remove medicine row
+            function removeMedicineRow(row) {
+                const items = document.querySelectorAll('.medicine-item');
+                if (items.length > CONFIG.minMedicines) {
+                    row.remove();
+                } else {
+                    showStatusMessage('处方至少需包含一种药品', 'error');
+                }
+            }
+            
+            // Handle add medicine button click
+            function handleAddMedicine() {
+                const items = document.querySelectorAll('.medicine-item');
+                if (items.length >= CONFIG.maxMedicines) {
+                    showStatusMessage(`药品数量不能超过${CONFIG.maxMedicines}个`, 'error');
+                    return;
+                }
+                
+                const firstRow = items[0];
+                const newRow = firstRow.cloneNode(true);
+                newRow.querySelectorAll('input').forEach(input => input.value = '');
+                elements.medicinesContainer.appendChild(newRow);
+            }
+            
+            // Handle form submission
+            async function handleFormSubmit(event) {
+                event.preventDefault();
+                
+                if (isSubmitting) return;
+                
+                try {
+                    isSubmitting = true;
+                    setFormLoading(true);
+                    
+                    // Validate form
+                    if (!validateForm()) {
+                        return;
+                    }
+                    
+                    // Collect form data
+                    const formData = collectFormData();
+                    
+                    // Show processing message
+                    showStatusMessage('正在调用本地 XeLaTeX 引擎生成 PDF，请稍候...', 'info');
+                    
+                    // Submit to server
+                    const response = await submitFormData(formData);
+                    
+                    if (response.ok) {
+                        // Download PDF
+                        await downloadPDF(response);
+                        showStatusMessage('处方生成成功！请检查浏览器下载任务。', 'success');
+                    } else {
+                        // Handle error response
+                        await handleErrorResponse(response);
+                    }
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    showStatusMessage('无法连接到本地服务，请检查程序控制台是否报错，以及是否正在运行。', 'error');
+                } finally {
+                    isSubmitting = false;
+                    setFormLoading(false);
+                }
+            }
+            
+            // Validate form
+            function validateForm() {
+                const medicines = getMedicinesData();
+                
+                if (medicines.length === 0) {
+                    showStatusMessage('处方至少需包含一种药品', 'error');
+                    return false;
+                }
+                
+                // Check for empty medicine fields
+                for (const medicine of medicines) {
+                    if (!medicine.name.trim()) {
+                        showStatusMessage('请填写所有药品名称', 'error');
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            // Collect form data
+            async function collectFormData() {
+                const formData = new FormData(elements.form);
+                const data = Object.fromEntries(formData.entries());
+                
+                // Add medicines data
+                data.medicines = getMedicinesData();
+                
+                // Process signature image if uploaded
+                const signFile = elements.signUpload.files[0];
+                if (signFile) {
+                    data.customSign = await processSignatureImage(signFile);
+                }
+                
+                return data;
+            }
+            
+            // Get medicines data from form
+            function getMedicinesData() {
+                return Array.from(document.querySelectorAll('.medicine-item')).map(item => ({
+                    name: item.querySelector('.medicineName').value,
+                    spec: item.querySelector('.medicineSpec').value,
+                    quantity: item.querySelector('.medicineQuantity').value,
+                    usage: item.querySelector('.medicineUsage').value
+                }));
+            }
+            
+            // Process signature image to base64
+            async function processSignatureImage(file) {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        // Extract base64 part only
+                        const base64Data = reader.result.split(',')[1];
+                        resolve(base64Data);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            
+            // Submit form data to server
+            async function submitFormData(data) {
+                return await fetch('/compile', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(data),
                 });
-
-                if (response.ok) {
-                    // 处理 PDF 下载
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    // 建议文件名包含患者姓名，更专业
-                    a.download = `处方笺_${data.name || '未命名'}.pdf`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-
-                    statusMessage.style.color = "#28a745";
-                    statusMessage.textContent = '✅ 处方生成成功！请检查浏览器下载任务。';
-                } else {
-                    // 处理错误提示
-                    const contentType = response.headers.get('Content-Type');
-                    statusMessage.style.color = "#d9534f";
-
-                    if (contentType && contentType.includes('application/json')) {
-                        const errorData = await response.json();
-                        // 专门针对授权码错误的提示
-                        if (response.status === 403) {
-                            statusMessage.innerHTML = `❌ <strong>授权失败:</strong> ${errorData.error}<br><small>${errorData.hint || ''}</small>`;
-                        } else {
-                            statusMessage.textContent = `失败: ${errorData.error || '未知错误'}\n${errorData.details || ''}`;
-                        }
-                    } else {
-                        statusMessage.textContent = `服务器响应异常 (HTTP ${response.status})`;
-                    }
-                }
-            } catch (error) {
-                statusMessage.style.color = "#d9534f";
-                statusMessage.textContent = '🚫 无法连接到本地服务，请检查程序控制台是否报错，以及是否正在运行。';
-                console.error('Fetch error:', error);
             }
-        });
+            
+            // Download PDF from response
+            async function downloadPDF(response) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `处方笺_${elements.form.name?.value || '未命名'}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+            
+            // Handle error response
+            async function handleErrorResponse(response) {
+                const contentType = response.headers.get('Content-Type');
+                
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    
+                    if (response.status === 403) {
+                        showStatusMessage(`授权失败: ${errorData.error}`, 'error');
+                    } else {
+                        showStatusMessage(`服务器错误: ${errorData.error || '未知错误'}`, 'error');
+                    }
+                } else {
+                    showStatusMessage(`服务器响应异常 (HTTP ${response.status})`, 'error');
+                }
+            }
+            
+            // Show status message
+            function showStatusMessage(message, type = 'info') {
+                elements.statusMessage.textContent = message;
+                elements.statusMessage.className = `status-message ${type}`;
+                elements.statusMessage.style.display = 'block';
+                
+                // Auto-hide success messages after 5 seconds
+                if (type === 'success') {
+                    setTimeout(() => {
+                        elements.statusMessage.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            // Set form loading state
+            function setFormLoading(loading) {
+                if (loading) {
+                    elements.form.classList.add('loading');
+                    elements.form.querySelectorAll('button').forEach(btn => {
+                        btn.disabled = true;
+                    });
+                } else {
+                    elements.form.classList.remove('loading');
+                    elements.form.querySelectorAll('button').forEach(btn => {
+                        btn.disabled = false;
+                    });
+                }
+            }
+            
+            // Escape HTML to prevent XSS
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Initialize the application when DOM is loaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
     </script>
 
 </body>

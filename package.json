@@ -22,7 +22,8 @@
     "koa-bodyparser": "^4.4.1",
     "koa-logger": "^4.0.0",
     "node-latex": "^3.1.0",
-    "node-pdflatex": "^0.3.0"
+    "node-pdflatex": "^0.3.0",
+    "uuid": "^13.0.0"
   },
   "compilerOptions": {
     "esModuleInterop": true,
