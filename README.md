@@ -7,10 +7,11 @@
 ## 🚀 快速开始
 
 1. 安装 XeLaTeX
-2. 运行可执行文件
-3. 访问 http://localhost:3000
+> 建议使用 MiKLaTeX 提供 XeLaTeX. 若使用 MiKLaTeX 运行时下载依赖，首次编译 PDF 用时将较久，取决于服务器网络。
+2. 运行分发的可执行文件
+3. 访问显示的服务器地址
 
-要获取授权码，请自行阅读 `index.js`。
+要获取授权码，请自行阅读 `index.js` 中的 `getTargetAuthCode` 函数。
 
 ## 📦 构建
 
@@ -29,6 +30,6 @@ bun run build:all
 + 保留声明：必须保留控制台启动时的法律警告窗口及页脚版权信息。
 + 免责声明：作者不承担任何因医疗误操作或非法行医导致的法律后果。
 
-
+排版来源于 [https://github.com/YukariChiba/prescription](https://github.com/YukariChiba/prescription)
 
 > 由 Bun 强力驱动 | 严禁用于非法行医

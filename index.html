@@ -174,7 +174,7 @@
             <div class="auth-box">
                 <label for="authCode">🔐 授权验证码 (Authentication Code)</label>
                 <input type="text" id="authCode" name="authCode" placeholder="请查阅源码计算此代码" required>
-                <small style="color: #856404;">* License 请查看页脚；非医师严禁操作</small>
+                <small style="color: #856404;">* License 请查看页脚；非医师严禁操作；授权基准：{{AUTH_BASE}}</small>
             </div>
 
             <div class="section-title">基础信息</div>
@@ -204,9 +204,9 @@
                 <div><label>费别</label><input type="text" name="feeType" placeholder="自费" required></div>
                 <div class="full-width">
                     <label>临床诊断</label>
-                    <textarea name="diagnosis" rows="2" placeholder="子宫内膜透明细胞腺癌[2C76.2]\ 伴肺转移[2D82.0]\ \textbf{确诊}"
+                    <textarea name="diagnosis" rows="2" placeholder="子宫内膜透明细胞腺癌[2C76.2] 伴肺转移[2D82.0] 确诊"
                         required></textarea>
-                    <small style="color: #3f3f3f;">* 望丰展？使 LaTeX...</small>
+                    <small style="color: #3f3f3f;">* <s>望丰展？使 LaTeX...</s> 不支持，请勿使用 LaTeX.</small>
                 </div>
             </div>
 
@@ -326,6 +326,12 @@
                 usage: item.querySelector('.medicineUsage').value
             }));
 
+            if(data.medicines.length === 0) {
+                statusMessage.style.color = "#d9534f";
+                statusMessage.textContent = '❌ 处方至少需包含一种药品';
+                return;
+            }
+
             const signFile = document.getElementById('signUpload').files[0];
             if (signFile) {
                 const reader = new FileReader();
@@ -370,7 +376,7 @@
                         if (response.status === 403) {
                             statusMessage.innerHTML = `❌ <strong>授权失败:</strong> ${errorData.error}<br><small>${errorData.hint || ''}</small>`;
                         } else {
-                            statusMessage.textContent = `失败: ${errorData.error || '未知错误'}`;
+                            statusMessage.textContent = `失败: ${errorData.error || '未知错误'}\n${errorData.details || ''}`;
                         }
                     } else {
                         statusMessage.textContent = `服务器响应异常 (HTTP ${response.status})`;
@@ -378,7 +384,7 @@
                 }
             } catch (error) {
                 statusMessage.style.color = "#d9534f";
-                statusMessage.textContent = '🚫 无法连接到本地服务，请检查程序控制台是否报错。';
+                statusMessage.textContent = '🚫 无法连接到本地服务，请检查程序控制台是否报错，以及是否正在运行。';
                 console.error('Fetch error:', error);
             }
         });
