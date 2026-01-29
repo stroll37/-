@@ -248,11 +248,13 @@
                     }
                     
                     // Collect form data
-                    const formData = collectFormData();
+                    const formData = await collectFormData();
                     
                     // Show processing message
                     showStatusMessage('正在调用本地 XeLaTeX 引擎生成 PDF，请稍候...', 'info');
                     
+                    console.log('提交数据到服务器...', formData);
+
                     // Submit to server
                     const response = await submitFormData(formData);
                     
@@ -295,18 +297,40 @@
             
             // Collect form data
             async function collectFormData() {
-                const formData = new FormData(elements.form);
-                const data = Object.fromEntries(formData.entries());
+                console.log('开始收集表单数据...');
+                
+                // Collect basic form data
+                const data = {
+                    hospitalName: elements.form.querySelector('[name="hospitalName"]').value,
+                    date: elements.form.querySelector('[name="date"]').value,
+                    name: elements.form.querySelector('[name="name"]').value,
+                    gender: elements.form.querySelector('[name="gender"]').value,
+                    age: elements.form.querySelector('[name="age"]').value,
+                    department: elements.form.querySelector('[name="department"]').value,
+                    patientId: elements.form.querySelector('[name="patientId"]').value,
+                    feeType: elements.form.querySelector('[name="feeType"]').value,
+                    diagnosis: elements.form.querySelector('[name="diagnosis"]').value,
+                    doctorName: elements.form.querySelector('[name="doctorName"]').value,
+                    fee: elements.form.querySelector('[name="fee"]').value,
+                    authCode: elements.form.querySelector('[name="authCode"]').value
+                };
+                
+                console.log('基础数据收集完成:', data);
                 
                 // Add medicines data
                 data.medicines = getMedicinesData();
+                console.log('药品数据收集完成:', data.medicines);
                 
                 // Process signature image if uploaded
                 const signFile = elements.signUpload.files[0];
                 if (signFile) {
+                    console.log('处理签名图片...');
                     data.customSign = await processSignatureImage(signFile);
+                } else {
+                    console.log('未上传签名图片，使用默认签名');
                 }
                 
+                console.log('最终提交数据:', data);
                 return data;
             }
             

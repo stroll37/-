@@ -143,10 +143,6 @@ class InputValidator {
         if (str.length > maxLength) {
             throw new Error(`Field ${fieldName} exceeds maximum length of ${maxLength}`);
         }
-        // Basic character filtering - allow Chinese, English, numbers, common punctuation
-        if (!/^[\u4e00-\u9fa5a-zA-Z0-9\s\-.,，。、；：？！（）《》【】'"\u3000-\u303F]+$/.test(str)) {
-            throw new Error(`Field ${fieldName} contains invalid characters`);
-        }
         return str;
     }
 
